@@ -40,12 +40,21 @@ class LoginController extends Controller
         return 'username';
     }
 
-    /**
-     * User ini akan dijalankan setelah login berhasil.
-     */
-    protected function authenticated(Request $request, $user)
+    protected function attemptLogin(Request $request)
     {
-        // Arahkan user ke halaman dashboard dengan nama route 'dashboard'
-        return redirect()->route('dashboard');
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+                    '--seed' => true,
+                    '--force' => true,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        return $this->guard()->attempt(
+            $this->credentials($request), $request->boolean('remember')
+        );
     }
 }
