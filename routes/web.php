@@ -25,7 +25,7 @@ Auth::routes();
 
 // Route untuk mengarahkan '/home' ke dashboard
 Route::any('/home', function () {
-    return redirect()->route('dashboard');
+    return redirect('/', 303);
 });
 
 // Grup route yang HARUS melalui autentikasi (login) terlebih dahulu
