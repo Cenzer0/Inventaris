@@ -36,11 +36,17 @@ return [
     'connections' => [
 
         'sqlite' => [
-            'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
-            'database' => '/app/database/database.sqlite',
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'earsip-db-3sse9w-zbf4x6'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'earsip'),
+            'username' => env('DB_USERNAME', 'earsipuser'),
+            'password' => env('DB_PASSWORD', 'earsipPassword123'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'strict' => true,
+            'engine' => null,
         ],
 
         'mysql' => [
