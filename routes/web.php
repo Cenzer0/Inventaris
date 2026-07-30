@@ -24,14 +24,14 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 // Route untuk mengarahkan '/home' ke dashboard
-Route::any('/home', function () {
-    return redirect('/', 303);
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
 });
 
 // Grup route yang HARUS melalui autentikasi (login) terlebih dahulu
 Route::middleware('auth')->group(function () {
     // Route Dashboard (Halaman Utama) - Semua role bisa akses
-    Route::match(['get', 'post'], '/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/realtime', [DashboardController::class, 'realtimeData'])->name('dashboard.realtime');
 
     // Reports

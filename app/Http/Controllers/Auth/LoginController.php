@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request; // Tambahkan ini
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    // Anda bisa hapus baris ini jika tidak perlu, atau biarkan saja
-    // protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/';
 
     public function __construct()
     {
@@ -29,7 +28,7 @@ class LoginController extends Controller
                 ]);
             }
         } catch (\Throwable $e) {
-            // Ignore error
+            // Ignore error silently
         }
 
         return view('auth.login');
@@ -50,7 +49,7 @@ class LoginController extends Controller
                 ]);
             }
         } catch (\Throwable $e) {
-            // Ignore error
+            // Ignore error silently
         }
 
         return $this->guard()->attempt(
@@ -58,12 +57,11 @@ class LoginController extends Controller
         );
     }
 
-    protected function sendLoginResponse(Request $request)
+    /**
+     * Redirect user to dashboard after successful authentication.
+     */
+    protected function authenticated(Request $request, $user)
     {
-        $request->session()->regenerate();
-
-        $this->clearLoginAttempts($request);
-
-        return redirect()->to('/', 303);
+        return redirect()->route('dashboard');
     }
 }
