@@ -31,7 +31,7 @@ Route::any('/home', function () {
 // Grup route yang HARUS melalui autentikasi (login) terlebih dahulu
 Route::middleware('auth')->group(function () {
     // Route Dashboard (Halaman Utama) - Semua role bisa akses
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::match(['get', 'post'], '/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/realtime', [DashboardController::class, 'realtimeData'])->name('dashboard.realtime');
 
     // Reports
