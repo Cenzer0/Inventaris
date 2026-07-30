@@ -58,8 +58,12 @@ class LoginController extends Controller
         );
     }
 
-    protected function authenticated(Request $request, $user)
+    protected function sendLoginResponse(Request $request)
     {
-        return redirect('/', 303);
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return redirect()->to('/', 303);
     }
 }
