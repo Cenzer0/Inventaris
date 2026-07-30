@@ -75,6 +75,16 @@ autostart=true
 autorestart=true
 EOF
 
+# Entrypoint script to fix SQLite permissions on startup
+RUN echo $'#!/bin/sh\n\
+if [ ! -f /var/www/html/database/database.sqlite ]; then\n\
+    touch /var/www/html/database/database.sqlite\n\
+    php artisan migrate:fresh --seed --force\n\
+fi\n\
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database\n\
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
+' > /entrypoint.sh && chmod +x /entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
