@@ -19,6 +19,22 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function showLoginForm()
+    {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+                    '--seed' => true,
+                    '--force' => true,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Ignore error
+        }
+
+        return view('auth.login');
+    }
+
     public function username()
     {
         return 'username';
