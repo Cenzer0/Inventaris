@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 // Route untuk mengarahkan '/home' ke dashboard
-Route::match(['get', 'post'], '/home', function () {
+Route::any('/home', function () {
     return redirect()->route('dashboard');
 });
 
