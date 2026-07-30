@@ -1,10 +1,12 @@
 FROM php:8.2-fpm-alpine
 
-# Install system dependencies & PHP extensions
+# Install system dependencies & PHP extensions (including pdo_sqlite)
 RUN apk add --no-cache \
     nginx \
     supervisor \
     curl \
+    sqlite \
+    sqlite-dev \
     libpng-dev \
     libxml2-dev \
     zip \
@@ -12,7 +14,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     icu-dev
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
+RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd intl
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -25,8 +27,12 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Setup SQLite database and run migrations & seeders
+RUN touch database/database.sqlite && \
+    php artisan migrate:fresh --seed --force
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/database
 
 # Nginx config
 RUN mkdir -p /run/nginx
