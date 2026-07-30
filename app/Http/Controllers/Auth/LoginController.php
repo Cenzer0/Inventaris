@@ -57,4 +57,9 @@ class LoginController extends Controller
             $this->credentials($request), $request->boolean('remember')
         );
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        return redirect()->route('dashboard');
+    }
 }
